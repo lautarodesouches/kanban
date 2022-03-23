@@ -1,22 +1,24 @@
 // DOM
 
+const body = document.getElementsByTagName('body')[0];
+const header = document.getElementsByTagName('header')[0];
 const main = document.getElementsByTagName('main')[0];
-
-const mostrarTarea        = document.getElementById('tareas').children[1];
-const mostrarProceso      = document.getElementById('proceso').children[1];
-const mostrarTerminadas   = document.getElementById('terminadas').children[1];
-
-const agregarTarea        = document.getElementById('tareas').children[2].children[0];
-const agregarProceso      = document.getElementById('proceso').children[2].children[0];
-const agregarTerminadas   = document.getElementById('terminadas').children[2].children[0];
 
 // Variables
 
-let tarea       = [];
-let proceso     = [];
-let terminadas  = [];
+let bg = 'bg-white';
+let text = 'text-dark';
 
 // Constructor
+
+class Tipo {
+
+    constructor(nombre, tipo) {
+        this.nombre = nombre;
+        this.tipo = tipo;
+    }
+
+}
 
 class Tarjeta {
 
@@ -27,120 +29,145 @@ class Tarjeta {
 
 }
 
-tarea.push(new Tarjeta('Primera tarea'));
-tarea.push(new Tarjeta('Segunda tarea'));
+// Array
 
-agregarTarea.onclick = () => {
+let tarjetas = [];
+let tipos = [new Tipo('Lista de tareas', 'tarea'), new Tipo('En proceso', 'proceso'), new Tipo('Terminadas', 'terminada')];
 
-    // Agregar nuevo
-    tarea.push(new Tarjeta('Nueva tarjeta'));
+// Tareas agregadas para prueba
 
-    // Recargar
-    mostrarTarjetas('tarea', tarea);
+tarjetas.push(new Tarjeta('Primera tarea', tipos[0].tipo));
+tarjetas.push(new Tarjeta('Segunda tarea', tipos[0].tipo));
+tarjetas.push(new Tarjeta('Tercera tarea', tipos[0].tipo));
 
-}
+tarjetas.push(new Tarjeta('Primera tarea en proceso', tipos[1].tipo));
+tarjetas.push(new Tarjeta('Segunda tarea en proceso', tipos[1].tipo));
 
-agregarProceso.onclick = () => {
+tarjetas.push(new Tarjeta('Primera tarea finalizada', tipos[2].tipo));
 
-    // Agregar nuevo
-    proceso.push(new Tarjeta('Nueva tarjeta'));
-
-    // Recargar
-    mostrarTarjetas('proceso', proceso);
-
-}
-
-agregarTerminadas.onclick = () => {
-
-    // Agregar nuevo
-    terminadas.push(new Tarjeta('Nueva tarjeta'));
-
-    // Recargar
-    mostrarTarjetas('terminadas', terminadas);
-
-}
+tarjetas.forEach(element => {
+    console.log(element)
+});
 
 // Funciones
 
-function mostrarTarjetas(estado, array) {
-    
-    // Asignar lugar a mostrar
-    let lugarAMostrar;
+function mostrar() {
 
-    if (estado === 'tarea') {
+    // Limpiar
+    main.innerHTML = '';
 
-        lugarAMostrar = mostrarTarea;
+    // Crear row
+    main.innerHTML = `<div class="mt-5 row align-items-start justify-content-center text-center"></div>`;
 
-    } else if(estado === 'proceso'){
+    // Por cada tipo crear una columna
+    tipos.forEach(tipos => {
 
-        lugarAMostrar = mostrarProceso;
-
-    } else {
-        
-        lugarAMostrar = mostrarTerminadas;
-
-    }
-
-    // Limpiar lugar
-    lugarAMostrar.innerHTML = '';
-
-    // Por cada elemento en el array
-    array.forEach(element => {
-
-        // Crear una 'tarjeta'
         let div = document.createElement('div');
-        div.classList = 'bg-white rounded shadow-sm p-1 position-relative my-2';
-        div.draggable = true;
+        div.classList = 'col-12 col-md-4 my-5 my-md-0';
         div.innerHTML = `
-            <p class="m-0">${element.titulo}</p>
-            <span class="borrar bg-danger rounded px-1 text-white">x</span>
-            <input type="text" class="d-none">
+            <div class="p-3 bg-light border rounded">
+				<h5 class="pt-2 pb-4">${tipos.nombre}</h5>
+				<div></div>
+				<div class="mt-5">
+					<button class="btn btn-secondary btn-sm">+ Añadir tarjeta</button>
+				</div>
+			</div>
         `;
 
-        // Al hacer click en el parrafo
-        div.children[0].onclick = () => {
-            // Ocultar parrafo
-            div.children[0].classList.add('d-none');
-            // Mostrar input
-            div.children[2].classList.remove('d-none');
-            // Asignar texto en parrafo al valor input para modificar
-            div.children[2].value = div.children[0].innerText;
-        }
+        let contenido = div.children[0].children[1];
 
-        div.children[2].onblur = () => {
-            // Cambiar array
-            div.children[2].value !== '' && (element.titulo = div.children[2].value);
-            // Recargar
-            mostrarTarjetas(estado, array);
-        }
+        tarjetas.forEach(element => {
 
-        div.children[2].onkeyup = (e) => {
-            // Si preciona enter
-            if (e.keyCode === 13) {
-                // Cambiar array
-                div.children[2].value !== '' && (element.titulo = div.children[2].value);
-                // Recargar
-                mostrarTarjetas(estado, array);
+            if (element.tipo === tipos.tipo) {
+             
+                // Crear una 'tarjeta'
+                let tarjeta = document.createElement('div');
+                tarjeta.classList = `${bg} ${text} rounded shadow-sm p-1 position-relative my-2`;
+                tarjeta.draggable = true;
+                tarjeta.innerHTML = `
+                    <p class="m-0">${element.titulo}</p>
+                    <span class="borrar bg-danger rounded px-1 text-white">x</span>
+                    <input type="text" class="d-none">
+                `;
+
+                // Al hacer click en el parrafo
+                tarjeta.children[0].onclick = () => {
+                    // Ocultar parrafo
+                    tarjeta.children[0].classList.add('d-none');
+                    // Mostrar input
+                    tarjeta.children[2].classList.remove('d-none');
+                    // Asignar texto en parrafo al valor input para modificar
+                    tarjeta.children[2].value = tarjeta.children[0].innerText;
+                }
+
+                // Al hacer click en otro lado
+                tarjeta.children[2].onblur = () => {
+                    // Cambiar array
+                    tarjeta.children[2].value !== '' && (element.titulo = tarjeta.children[2].value);
+                    // Recargar
+                    mostrar();
+                }
+                
+                // Al hacer enter
+                tarjeta.children[2].onkeyup = (e) => {
+                    if (e.keyCode === 13) {
+                        // Cambiar array
+                        tarjeta.children[2].value !== '' && (element.titulo = tarjeta.children[2].value);
+                        // Recargar
+                        mostrar();
+                    }
+                }
+        
+                // Al hacer click en borrar
+                tarjeta.children[1].onclick = () => {
+                    // Buscar y borrar elemento del array
+                    tarjetas.splice(tarjetas.indexOf(element),1);
+                    // Recargar
+                    mostrar();
+                }
+
+                contenido.appendChild(tarjeta);
+                
             }
-        }
 
-        // Al hacer click en borrar
-        div.children[1].onclick = () => {
-            // Buscar y borrar elemento del array
-            array.splice(array.indexOf(element),1);
+        });
+
+        // Al hacer click en boton agregar
+        div.children[0].children[2].children[0].onclick = () => {
+                
+            // Agregar nuevo
+            tarjetas.push(new Tarjeta('Nueva tarjeta', tipos.tipo));
+        
             // Recargar
-            mostrarTarjetas(estado, array);
-        }
+            mostrar();
+        
+        };
 
-        // Agregar div a lugar
-        lugarAMostrar.appendChild(div);
+        // Agregar div al main
+        main.children[0].appendChild(div)
 
     });
 
 }
 
-// Llamar funciones
+// Modo oscuro
 
-mostrarTarjetas('tarea', tarea);
-mostrarTarjetas('proceso', proceso);
-mostrarTarjetas('terminadas', terminadas);
+function darkMode() {
+
+    body.classList.toggle('bg-dark');
+
+    bg === 'bg-white' ? (bg = 'bg-dark') : (bg = 'bg-white');
+    text === 'text-dark' ? (text = 'text-white') : (text = 'text-dark');
+
+    // Cambiar relleno SVG
+    header.children[0].style.fill !== 'white' ? header.children[0].style.fill = 'white' : header.children[0].style.fill = 'black';
+
+    // Recargar
+    mostrar();
+}
+
+header.children[0].onclick = () => {darkMode()}
+
+// Ejecutar funciones
+
+mostrar();
