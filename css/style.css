@@ -1,0 +1,52 @@
+/* Web Safe Fonts */
+
+.arial{
+  font-family: Arial, sans-serif;
+}
+
+.verdana{
+  font-family: Verdana, sans-serif;
+}
+
+.helvetica{
+  font-family: Helvetica, sans-serif;
+}
+
+.tahoma{
+  font-family: Tahoma, sans-serif;
+}
+
+.trebuchet{
+  font-family: 'Trebuchet MS', sans-serif;
+}
+
+.times{
+  font-family: 'Times New Roman', serif;
+}
+
+.georgia{
+  font-family: Georgia, serif;
+}
+
+.garamond{
+  font-family: Garamond, serif;
+}
+
+.courier{
+  font-family: 'Courier New', monospace;
+}
+
+.brush{
+  font-family: 'Brush Script MT', cursive;
+}
+
+/* -- Fonts End -- */
+
+/* -- Coustom Start -- */
+
+.borrar{
+  position: absolute;
+  top: 0;
+  right: 0;
+  cursor: pointer;
+}
