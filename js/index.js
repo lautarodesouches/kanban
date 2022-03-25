@@ -8,14 +8,15 @@ const main = document.getElementsByTagName('main')[0];
 
 let bg = 'bg-white';
 let text = 'text-dark';
+let idTarjeta = 0;
 
 // Constructor
 
 class Tipo {
 
-    constructor(nombre, tipo) {
+    constructor(nombre, id) {
         this.nombre = nombre;
-        this.tipo = tipo;
+        this.id = id;
     }
 
 }
@@ -25,6 +26,7 @@ class Tarjeta {
     constructor(titulo, tipo) {
         this.titulo = titulo;
         this.tipo = tipo;
+        this.id = idTarjeta++;
     }
 
 }
@@ -36,20 +38,48 @@ let tipos = [new Tipo('Lista de tareas', 'tarea'), new Tipo('En proceso', 'proce
 
 // Tareas agregadas para prueba
 
-tarjetas.push(new Tarjeta('Primera tarea', tipos[0].tipo));
-tarjetas.push(new Tarjeta('Segunda tarea', tipos[0].tipo));
-tarjetas.push(new Tarjeta('Tercera tarea', tipos[0].tipo));
+tarjetas.push(new Tarjeta('Primera tarea', tipos[0].id));
+tarjetas.push(new Tarjeta('Segunda tarea', tipos[0].id));
+tarjetas.push(new Tarjeta('Tercera tarea', tipos[0].id));
 
-tarjetas.push(new Tarjeta('Primera tarea en proceso', tipos[1].tipo));
-tarjetas.push(new Tarjeta('Segunda tarea en proceso', tipos[1].tipo));
+tarjetas.push(new Tarjeta('Primera tarea en proceso', tipos[1].id));
+tarjetas.push(new Tarjeta('Segunda tarea en proceso', tipos[1].id));
 
-tarjetas.push(new Tarjeta('Primera tarea finalizada', tipos[2].tipo));
-
-tarjetas.forEach(element => {
-    console.log(element)
-});
+tarjetas.push(new Tarjeta('Primera tarea finalizada', tipos[2].id));
 
 // Funciones
+
+function onDragStart(event) {
+    event
+      .dataTransfer
+      .setData('text/plain', event.target.id);
+}
+
+function onDragOver(event) {
+    event.preventDefault();
+}
+
+function onDrop(event) {
+
+    const id = event
+      .dataTransfer
+      .getData('text');
+
+    const draggableElement = document.getElementById(id);
+
+    const dropzone = event.target;
+
+    if (dropzone.id === 'tarea') {
+      draggableElement.innerText = 'dropped';
+    }
+
+    dropzone.appendChild(draggableElement);
+
+    event
+    .dataTransfer
+    .clearData();
+
+}
 
 function mostrar() {
 
@@ -66,9 +96,9 @@ function mostrar() {
         div.classList = 'col-12 col-md-4 my-5 my-md-0';
         div.innerHTML = `
             <div class="p-3 bg-light border rounded">
-				<h5 class="pt-2 pb-4">${tipos.nombre}</h5>
-				<div></div>
-				<div class="mt-5">
+				<h5 class="pt-2">${tipos.nombre}</h5>
+				<div class="py-5"></div>
+				<div>
 					<button class="btn btn-secondary btn-sm">+ Añadir tarjeta</button>
 				</div>
 			</div>
@@ -78,17 +108,22 @@ function mostrar() {
 
         tarjetas.forEach(element => {
 
-            if (element.tipo === tipos.tipo) {
+            if (element.tipo === tipos.id) {
              
                 // Crear una 'tarjeta'
                 let tarjeta = document.createElement('div');
-                tarjeta.classList = `${bg} ${text} rounded shadow-sm p-1 position-relative my-2`;
+                tarjeta.id = element.id;
+                tarjeta.classList = `tarjeta ${bg} ${text} rounded shadow-sm p-1 position-relative my-2`;
                 tarjeta.draggable = true;
                 tarjeta.innerHTML = `
                     <p class="m-0">${element.titulo}</p>
                     <span class="borrar bg-danger rounded px-1 text-white">x</span>
                     <input type="text" class="d-none">
                 `;
+
+                tarjeta.ondragstart = (event) => {
+                    onDragStart(event);
+                };
 
                 // Al hacer click en el parrafo
                 tarjeta.children[0].onclick = () => {
@@ -98,14 +133,6 @@ function mostrar() {
                     tarjeta.children[2].classList.remove('d-none');
                     // Asignar texto en parrafo al valor input para modificar
                     tarjeta.children[2].value = tarjeta.children[0].innerText;
-                }
-
-                // Al hacer click en otro lado
-                tarjeta.children[2].onblur = () => {
-                    // Cambiar array
-                    tarjeta.children[2].value !== '' && (element.titulo = tarjeta.children[2].value);
-                    // Recargar
-                    mostrar();
                 }
                 
                 // Al hacer enter
@@ -136,12 +163,16 @@ function mostrar() {
         div.children[0].children[2].children[0].onclick = () => {
                 
             // Agregar nuevo
-            tarjetas.push(new Tarjeta('Nueva tarjeta', tipos.tipo));
+            tarjetas.push(new Tarjeta('Nueva tarjeta', tipos.id));
         
             // Recargar
             mostrar();
         
         };
+
+        div.ondragover = (event) => {onDragOver(event)};
+
+        div.ondrop = (event) => {onDrop(event)};
 
         // Agregar div al main
         main.children[0].appendChild(div)
@@ -151,6 +182,8 @@ function mostrar() {
 }
 
 // Modo oscuro
+
+let dMActive = localStorage.getItem('dMActive') === 'true';
 
 function darkMode() {
 
@@ -164,9 +197,14 @@ function darkMode() {
 
     // Recargar
     mostrar();
+
+    localStorage.setItem('dMActive',dMActive)
+
 }
 
-header.children[0].onclick = () => {darkMode()}
+dMActive && darkMode();
+
+header.children[0].onclick = () => {dMActive = !dMActive; darkMode()}
 
 // Ejecutar funciones
 
