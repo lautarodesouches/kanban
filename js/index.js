@@ -65,15 +65,11 @@ function onDrop(event) {
       .dataTransfer
       .getData('text');
 
-    const draggableElement = document.getElementById(id);
-
     const dropzone = event.target;
+    
+    tarjetas[id].tipo = dropzone.id;
 
-    if (dropzone.id === 'tarea') {
-      draggableElement.innerText = 'dropped';
-    }
-
-    dropzone.appendChild(draggableElement);
+    mostrar()
 
     event
     .dataTransfer
@@ -97,7 +93,7 @@ function mostrar() {
         div.innerHTML = `
             <div class="p-3 bg-light border rounded">
 				<h5 class="pt-2">${tipos.nombre}</h5>
-				<div class="py-5"></div>
+				<div class="py-5 border" id="${tipos.id}"></div>
 				<div>
 					<button class="btn btn-secondary btn-sm">+ Añadir tarjeta</button>
 				</div>
