@@ -1,25 +1,20 @@
 // DOM
 
-const body = document.getElementsByTagName('body')[0];
-const header = document.getElementsByTagName('header')[0];
-const main = document.getElementsByTagName('main')[0];
+const body      = document.getElementsByTagName('body')[0];
+const header    = document.getElementsByTagName('header')[0];
+const tablero   = document.getElementById('tablero');
 
 // Variables
 
-let bg = 'bg-white';
-let text = 'text-dark';
-let idTarjeta = 0;
+let bg          = 'bg-white';
+let text        = 'text-dark';
+let idTarjeta   = 0;
 
-// Constructor
+const tipos     = [];
+// Asignar array tarjetas del localStorage o crear array
+const tarjetas  = JSON.parse(localStorage.getItem('tarjetas')) || [];
 
-class Tipo {
-
-    constructor(nombre, id) {
-        this.nombre = nombre;
-        this.id = id;
-    }
-
-}
+// Clases
 
 class Tarjeta {
 
@@ -31,28 +26,25 @@ class Tarjeta {
 
 }
 
-// Array
+class Tipo {
 
-let tarjetas = [];
-let tipos = [new Tipo('Lista de tareas', 'tarea'), new Tipo('En proceso', 'proceso'), new Tipo('Terminadas', 'terminada')];
+    constructor(nombre, id) {
+        this.nombre = nombre;
+        this.id = id;
+    }
 
-// Tareas agregadas para prueba
+}
 
-tarjetas.push(new Tarjeta('Primera tarea', tipos[0].id));
-tarjetas.push(new Tarjeta('Segunda tarea', tipos[0].id));
-tarjetas.push(new Tarjeta('Tercera tarea', tipos[0].id));
-
-tarjetas.push(new Tarjeta('Primera tarea en proceso', tipos[1].id));
-tarjetas.push(new Tarjeta('Segunda tarea en proceso', tipos[1].id));
-
-tarjetas.push(new Tarjeta('Primera tarea finalizada', tipos[2].id));
+// Agregar tipos o columnas
+tipos.push(new Tipo('Lista de tareas', 'tarea'), new Tipo('En proceso', 'proceso'), new Tipo('Terminadas', 'terminada'));
 
 // Funciones
 
 function onDragStart(event) {
+    // Pasar el id
     event
-      .dataTransfer
-      .setData('text/plain', event.target.id);
+        .dataTransfer
+        .setData('text/plain', event.target.id);
 }
 
 function onDragOver(event) {
@@ -61,29 +53,29 @@ function onDragOver(event) {
 
 function onDrop(event) {
 
+    // Obtener id
     const id = event
-      .dataTransfer
-      .getData('text');
+        .dataTransfer
+        .getData('text');
 
+    // Ver donde se soltó
     const dropzone = event.target;
     
-    tarjetas[id].tipo = dropzone.id;
+    // Si el lugar donde cae tiene un id (tarea, proceso o terminada), cambiar el tipo de tarjeta
+    dropzone.id !== '' && (tarjetas[id].tipo = dropzone.id);
 
-    mostrar()
-
-    event
-    .dataTransfer
-    .clearData();
+    // Recargar
+    mostrar();
 
 }
 
 function mostrar() {
 
     // Limpiar
-    main.innerHTML = '';
+    tablero.innerHTML = '';
 
     // Crear row
-    main.innerHTML = `<div class="mt-5 row align-items-start justify-content-center text-center"></div>`;
+    tablero.innerHTML = `<div class="mt-5 row justify-content-center text-center"></div>`;
 
     // Por cada tipo crear una columna
     tipos.forEach(tipos => {
@@ -93,20 +85,23 @@ function mostrar() {
         div.innerHTML = `
             <div class="p-3 bg-light border rounded">
 				<h5 class="pt-2">${tipos.nombre}</h5>
-				<div class="py-5 border" id="${tipos.id}"></div>
-				<div>
+				<div class="py-5 border rounded" id="${tipos.id}"></div>
+				<div class="mt-2">
 					<button class="btn btn-secondary btn-sm">+ Añadir tarjeta</button>
 				</div>
 			</div>
         `;
 
-        let contenido = div.children[0].children[1];
+        // Donde van a ir las tarjetas
+        const contenido = div.children[0].children[1];
 
+        // Por cada tarjeta en array tarjetas
         tarjetas.forEach(element => {
 
+            // Si el tipo de tarjeta corresponde a la columna
             if (element.tipo === tipos.id) {
              
-                // Crear una 'tarjeta'
+                // Mostrar tarjeta
                 let tarjeta = document.createElement('div');
                 tarjeta.id = element.id;
                 tarjeta.classList = `tarjeta ${bg} ${text} rounded shadow-sm p-1 position-relative my-2`;
@@ -117,6 +112,7 @@ function mostrar() {
                     <input type="text" class="d-none">
                 `;
 
+                // Al arrastrar
                 tarjeta.ondragstart = (event) => {
                     onDragStart(event);
                 };
@@ -141,7 +137,7 @@ function mostrar() {
                     }
                 }
         
-                // Al hacer click en borrar
+                // Al hacer click en la x roja
                 tarjeta.children[1].onclick = () => {
                     // Buscar y borrar elemento del array
                     tarjetas.splice(tarjetas.indexOf(element),1);
@@ -157,23 +153,25 @@ function mostrar() {
 
         // Al hacer click en boton agregar
         div.children[0].children[2].children[0].onclick = () => {
-                
-            // Agregar nuevo
+            // Agregar nueva tarjeta con el tipo correspondiente
             tarjetas.push(new Tarjeta('Nueva tarjeta', tipos.id));
-        
             // Recargar
             mostrar();
-        
         };
 
+        // Cuando un elemento se esta arrastrando por encima
         div.ondragover = (event) => {onDragOver(event)};
 
+        // Cuando cae un elemento
         div.ondrop = (event) => {onDrop(event)};
 
         // Agregar div al main
-        main.children[0].appendChild(div)
+        tablero.children[0].appendChild(div);
 
     });
+
+    // Actualizar tarjetas
+    localStorage.setItem('tarjetas', JSON.stringify(tarjetas));
 
 }
 
@@ -183,25 +181,29 @@ let dMActive = localStorage.getItem('dMActive') === 'true';
 
 function darkMode() {
 
+    // Cambiar bg del body
     body.classList.toggle('bg-dark');
 
+    // Consultar variables background y color de texto y cambiar
     bg === 'bg-white' ? (bg = 'bg-dark') : (bg = 'bg-white');
     text === 'text-dark' ? (text = 'text-white') : (text = 'text-dark');
 
     // Cambiar relleno SVG
     header.children[0].style.fill !== 'white' ? header.children[0].style.fill = 'white' : header.children[0].style.fill = 'black';
 
+    // Almacenar configuracion en localStorage
+    localStorage.setItem('dMActive',dMActive);
+
     // Recargar
     mostrar();
 
-    localStorage.setItem('dMActive',dMActive)
-
 }
 
+// Si el modo oscuro esta activado (es true), llamar funcion
 dMActive && darkMode();
 
-header.children[0].onclick = () => {dMActive = !dMActive; darkMode()}
+// Si hacen click en el
+header.children[0].onclick = () => {dMActive = !dMActive; darkMode()};
 
-// Ejecutar funciones
-
+// --- Ejecutar funcion principal ---
 mostrar();
