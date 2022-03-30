@@ -8,7 +8,7 @@ const tablero   = document.getElementById('tablero');
 
 let bg          = 'bg-white';
 let text        = 'text-dark';
-let idTarjeta   = 0;
+let idTarjeta   = JSON.parse(localStorage.getItem('idTarjeta')) || 0;
 
 const tipos     = [];
 // Asignar array tarjetas del localStorage o crear array
@@ -22,6 +22,7 @@ class Tarjeta {
         this.titulo = titulo;
         this.tipo = tipo;
         this.id = idTarjeta++;
+        localStorage.setItem('idTarjeta', idTarjeta);
     }
 
 }
@@ -60,9 +61,15 @@ function onDrop(event) {
 
     // Ver donde se soltó
     const dropzone = event.target;
-    
-    // Si el lugar donde cae tiene un id (tarea, proceso o terminada), cambiar el tipo de tarjeta
-    dropzone.id !== '' && (tarjetas[id].tipo = dropzone.id);
+
+    // Si el lugar donde cae tiene un id que es igual a tarea, proceso o terminada
+    if (dropzone.id === 'tarea' || dropzone.id === 'proceso' || dropzone.id === 'terminada') {
+        // Buscar tarjeta por id
+        const resultado = tarjetas.find((el) => el.id === parseInt(id));
+        console.log(resultado)
+        // Si encuentra un resultado, cambiar tipo de tarjeta
+        resultado !== undefined && (tarjetas[tarjetas.indexOf(resultado)].tipo =  dropzone.id);
+    }
 
     // Recargar
     mostrar();
@@ -108,7 +115,7 @@ function mostrar() {
                 tarjeta.draggable = true;
                 tarjeta.innerHTML = `
                     <p class="m-0">${element.titulo}</p>
-                    <span class="borrar bg-danger rounded px-1 text-white">x</span>
+                    <span class="borrar bg-danger rounded-end px-1 text-white">x</span>
                     <input type="text" class="d-none">
                 `;
 
@@ -125,6 +132,8 @@ function mostrar() {
                     tarjeta.children[2].classList.remove('d-none');
                     // Asignar texto en parrafo al valor input para modificar
                     tarjeta.children[2].value = tarjeta.children[0].innerText;
+                    // Hacer foco en input
+                    tarjeta.children[2].focus();
                 }
                 
                 // Al hacer enter
@@ -135,6 +144,14 @@ function mostrar() {
                         // Recargar
                         mostrar();
                     }
+                }
+
+                // Al desenfocar
+                tarjeta.children[2].onblur = () => {
+                    // Cambiar array
+                    tarjeta.children[2].value !== '' && (element.titulo = tarjeta.children[2].value);
+                    // Recargar
+                    mostrar();
                 }
         
                 // Al hacer click en la x roja
@@ -174,36 +191,6 @@ function mostrar() {
     localStorage.setItem('tarjetas', JSON.stringify(tarjetas));
 
 }
-
-// Modo oscuro
-
-let dMActive = localStorage.getItem('dMActive') === 'true';
-
-function darkMode() {
-
-    // Cambiar bg del body
-    body.classList.toggle('bg-dark');
-
-    // Consultar variables background y color de texto y cambiar
-    bg === 'bg-white' ? (bg = 'bg-dark') : (bg = 'bg-white');
-    text === 'text-dark' ? (text = 'text-white') : (text = 'text-dark');
-
-    // Cambiar relleno SVG
-    header.children[0].style.fill !== 'white' ? header.children[0].style.fill = 'white' : header.children[0].style.fill = 'black';
-
-    // Almacenar configuracion en localStorage
-    localStorage.setItem('dMActive',dMActive);
-
-    // Recargar
-    mostrar();
-
-}
-
-// Si el modo oscuro esta activado (es true), llamar funcion
-dMActive && darkMode();
-
-// Si hacen click en el
-header.children[0].onclick = () => {dMActive = !dMActive; darkMode()};
 
 // --- Ejecutar funcion principal ---
 mostrar();

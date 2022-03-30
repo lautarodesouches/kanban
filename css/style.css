@@ -48,9 +48,16 @@ svg{
   cursor: pointer;
 }
 
+.tarjeta p{
+  width: 95%;
+}
+
 .borrar{
   position: absolute;
   top: 0;
   right: 0;
+  bottom: 0;
+  width: 5%;
   cursor: pointer;
+  z-index: 10;
 }
