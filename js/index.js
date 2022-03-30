@@ -6,11 +6,9 @@ const tablero   = document.getElementById('tablero');
 
 // Variables
 
-let bg          = 'bg-white';
-let text        = 'text-dark';
-let idTarjeta   = JSON.parse(localStorage.getItem('idTarjeta')) || 0;
-
 const tipos     = [];
+let idTarjeta   = 0;
+
 // Asignar array tarjetas del localStorage o crear array
 const tarjetas  = JSON.parse(localStorage.getItem('tarjetas')) || [];
 
@@ -21,8 +19,7 @@ class Tarjeta {
     constructor(titulo, tipo) {
         this.titulo = titulo;
         this.tipo = tipo;
-        this.id = idTarjeta++;
-        localStorage.setItem('idTarjeta', idTarjeta);
+        this.id = ++idTarjeta;
     }
 
 }
@@ -38,6 +35,14 @@ class Tipo {
 
 // Agregar tipos o columnas
 tipos.push(new Tipo('Lista de tareas', 'tarea'), new Tipo('En proceso', 'proceso'), new Tipo('Terminadas', 'terminada'));
+
+// Si hay ya hay tarjetas
+if (tarjetas.length > 0) {
+    // Almacenar ids tarjetas
+    const ids = tarjetas.map(obj => {return obj.id});
+    // Buscar id maximo
+    idTarjeta = Math.max(...ids);
+}
 
 // Funciones
 
@@ -111,7 +116,7 @@ function mostrar() {
                 // Mostrar tarjeta
                 let tarjeta = document.createElement('div');
                 tarjeta.id = element.id;
-                tarjeta.classList = `tarjeta ${bg} ${text} rounded shadow-sm p-1 position-relative my-2`;
+                tarjeta.classList = `tarjeta rounded shadow-sm p-1 position-relative my-2`;
                 tarjeta.draggable = true;
                 tarjeta.innerHTML = `
                     <p class="m-0">${element.titulo}</p>
