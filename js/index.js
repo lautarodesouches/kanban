@@ -2,7 +2,13 @@
 
 const body      = document.getElementsByTagName('body')[0];
 const header    = document.getElementsByTagName('header')[0];
-const tablero   = document.getElementById('tablero');
+const board     = document.getElementById('board');
+const details   = document.getElementById('details');
+const closeDet  = details.children[0];
+
+closeDet.onclick = () => {
+    details.classList.toggle('d-flex')
+}
 
 // Variables
 
@@ -17,9 +23,12 @@ const tarjetas  = JSON.parse(localStorage.getItem('tarjetas')) || [];
 class Tarjeta {
 
     constructor(titulo, tipo) {
-        this.titulo = titulo;
-        this.tipo = tipo;
-        this.id = ++idTarjeta;
+        this.titulo         = titulo;
+        this.tipo           = tipo;
+        this.id             = ++idTarjeta;
+        this.descripcion    = '';
+        this.fecha          = '';
+        this.prioridad      = '';
     }
 
 }
@@ -84,10 +93,10 @@ function onDrop(event) {
 function mostrar() {
 
     // Limpiar
-    tablero.innerHTML = '';
+    board.innerHTML = '';
 
     // Crear row
-    tablero.innerHTML = `<div class="mt-5 row justify-content-center text-center"></div>`;
+    board.innerHTML = `<div class="mt-5 row justify-content-center text-center"></div>`;
 
     // Por cada tipo crear una columna
     tipos.forEach(tipos => {
@@ -97,7 +106,7 @@ function mostrar() {
         div.innerHTML = `
             <div class="p-3 bg-light border rounded">
 				<h5 class="pt-2">${tipos.nombre}</h5>
-				<div class="py-5 border rounded" id="${tipos.id}"></div>
+				<div class="py-5 rounded" id="${tipos.id}"></div>
 				<div class="mt-2">
 					<button class="btn btn-secondary btn-sm">+ Añadir tarjeta</button>
 				</div>
@@ -116,13 +125,30 @@ function mostrar() {
                 // Mostrar tarjeta
                 let tarjeta = document.createElement('div');
                 tarjeta.id = element.id;
-                tarjeta.classList = `tarjeta rounded shadow-sm p-1 position-relative my-2`;
+                tarjeta.classList = `row bg-white tarjeta rounded shadow-sm my-2`;
                 tarjeta.draggable = true;
                 tarjeta.innerHTML = `
-                    <p class="m-0">${element.titulo}</p>
-                    <span class="borrar bg-danger rounded-end px-1 text-white">x</span>
-                    <input type="text" class="d-none">
+                    <div class="col-1">
+                        <i class="bi bi-list"></i>
+                    </div>
+                    <div class="col-10 py-1">
+                        <p class="m-0">${element.titulo}</p>
+                        <input type="text" class="d-none">
+                    </div>
+                    <div class="col-1">
+                        <i class="bi bi-x-square-fill text-danger"></i>
+                    </div>
                 `;
+
+                // Variables
+                let det = tarjeta.children[0];
+                let par = tarjeta.children[1].children[0];
+                let inp = tarjeta.children[1].children[1];
+                let del = tarjeta.children[2];
+
+                det.onclick = () => {
+                    details.classList.toggle('d-flex')
+                }
 
                 // Al arrastrar
                 tarjeta.ondragstart = (event) => {
@@ -130,37 +156,37 @@ function mostrar() {
                 };
 
                 // Al hacer click en el parrafo
-                tarjeta.children[0].onclick = () => {
+                par.onclick = () => {
                     // Ocultar parrafo
-                    tarjeta.children[0].classList.add('d-none');
+                    par.classList.add('d-none');
                     // Mostrar input
-                    tarjeta.children[2].classList.remove('d-none');
+                    inp.classList.remove('d-none');
                     // Asignar texto en parrafo al valor input para modificar
-                    tarjeta.children[2].value = tarjeta.children[0].innerText;
+                    inp.value = par.innerText;
                     // Hacer foco en input
-                    tarjeta.children[2].focus();
+                    inp.focus();
                 }
                 
                 // Al hacer enter
-                tarjeta.children[2].onkeyup = (e) => {
+                inp.onkeyup = (e) => {
                     if (e.keyCode === 13) {
                         // Cambiar array
-                        tarjeta.children[2].value !== '' && (element.titulo = tarjeta.children[2].value);
+                        inp.value !== '' && (element.titulo = inp.value);
                         // Recargar
                         mostrar();
                     }
                 }
 
                 // Al desenfocar
-                tarjeta.children[2].onblur = () => {
+                inp.onblur = () => {
                     // Cambiar array
-                    tarjeta.children[2].value !== '' && (element.titulo = tarjeta.children[2].value);
+                    inp.value !== '' && (element.titulo = inp.value);
                     // Recargar
                     mostrar();
                 }
         
                 // Al hacer click en la x roja
-                tarjeta.children[1].onclick = () => {
+                del.onclick = () => {
                     // Buscar y borrar elemento del array
                     tarjetas.splice(tarjetas.indexOf(element),1);
                     // Recargar
@@ -188,7 +214,7 @@ function mostrar() {
         div.ondrop = (event) => {onDrop(event)};
 
         // Agregar div al main
-        tablero.children[0].appendChild(div);
+        board.children[0].appendChild(div);
 
     });
 

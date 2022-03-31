@@ -1,3 +1,6 @@
+/* Bootstrap Icons */
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css");
+
 /* Web Safe Fonts */
 
 .arial{
@@ -44,20 +47,54 @@
 
 /* -- Coustom Start -- */
 
-svg{
+.pointer{
   cursor: pointer;
 }
 
-.tarjeta p{
-  width: 95%;
-}
-
-.borrar{
+#details{
+  align-items: center;
+  background-color: #ffffffcb;
+  border-radius: 5px;
+  display: none;
+  height: 100vh;
+  justify-content: center;
+  left: 0;
   position: absolute;
   top: 0;
-  right: 0;
-  bottom: 0;
-  width: 5%;
+  width: 100vw;
+  z-index: 99;
+}
+
+#details i{
+  position: absolute;
+  top: 1%;
+  right: 1%;
+}
+
+#details .container{
+  background-color: #9e9e9e;
+}
+
+i{
   cursor: pointer;
-  z-index: 10;
+}
+
+#cardType .pointer, #cardDate .pointer{
+  background-color: #3f51b5;
+}
+
+#cardType, #cardId, #cardDate{
+  text-align: center;
+}
+
+@media (min-width:768px){
+  
+  #cardType{
+    text-align: start;
+  }
+  
+  #cardDate{
+    text-align: end;
+  }
+
 }
