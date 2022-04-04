@@ -53,15 +53,15 @@
 
 #details{
   align-items: center;
-  background-color: #ffffffcb;
-  border-radius: 5px;
+  background-color: #ffffff;
+  border-bottom: 1px solid black;
   display: none;
-  height: 100vh;
+  height: 100%;
   justify-content: center;
   left: 0;
-  position: absolute;
+  position: fixed;
   top: 0;
-  width: 100vw;
+  width: 100%;
   z-index: 99;
 }
 
@@ -88,6 +88,11 @@ i{
 }
 
 @media (min-width:768px){
+  
+  #details{
+    background-color: #ffffffcb;
+    border-bottom: none;
+  }
   
   #cardType{
     text-align: start;
