@@ -46,11 +46,9 @@
 /* -- Fonts End -- */
 
 /* -- Coustom Start -- */
-
-.pointer{
-  cursor: pointer;
+.bg-card{
+  background-color: #dedede;
 }
-
 #details{
   align-items: center;
   background-color: #b4b4b4cb;
@@ -64,30 +62,30 @@
   width: 100%;
   z-index: 99;
 }
-
+#details .container{
+  background-color: #ffffff;
+}
 #details i{
   position: absolute;
   top: 1%;
   right: 1%;
 }
-
-#details .container{
-  background-color: #ffffff;
-}
-
 i{
   cursor: pointer;
 }
-
 input{
   border: 1px solid black;
   border-radius: 5px;
 }
-
 input:focus{
-  border: 1px solid blue;
+  background-color: #fff;
 }
-
+option{
+  background-color: #fff;
+}
+.pointer{
+  cursor: pointer;
+}
 /* #cardType, #cardDate{
   background-color: #3f51b5;
 } */

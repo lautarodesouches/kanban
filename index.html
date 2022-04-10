@@ -18,6 +18,8 @@
     <!--===============================================================================================-->
     <link rel="stylesheet" href="./css/style.css">
     <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <!--===============================================================================================-->
     <link rel="shortcut icon" href="./img/favicon.png">
     <!--===============================================================================================-->
     <title>Kanban</title>
@@ -33,39 +35,52 @@
                 <form action="" method="post" id="cardForm">
                     <div class="row align-items-center justify-content-center">
                         <div class="col-12 col-md-4 py-5 px-3" id="cardType">
-                            <span class="bg-light rounded p-2 px-4">
+                            <div class="bg-card rounded py-2">
                                 <span>Tipo: </span>
                                 <span></span>
-                            </span>
+                            </div>
                             <input type="text" name="type" id="type" class="d-none" placeholder="Tipo">
                         </div>
                         <div class="col-12 col-md-4 py-5 px-3" id="cardId">
-                            <span class="bg-light rounded p-2 px-4">
+                            <div class="bg-card rounded py-2">
                                 <span>Id: </span>
                                 <span></span>
-                            </span>
+                            </div>
                             <input type="text" name="id" id="id" class="d-none" placeholder="ID" readonly>
                         </div>
                         <div class="col-12 col-md-4 py-5 px-3" id="cardDate">
-                            <span class="bg-light rounded p-2 px-4">
+                            <div class="bg-card rounded py-2">
                                 <span>Fecha: </span>
                                 <span></span>
-                            </span>
+                            </div>
                             <input type="date" name="date" id="date" class="d-none" placeholder="Fecha">
                         </div>
-                        <div class="col-12 col-md-6 py-5 px-3" id="cardTitle">
-                            <span class="bg-light rounded p-2 px-4">
+                        <div class="col-12 col-md-4 py-5 px-3" id="cardTitle">
+                            <div class="bg-card rounded py-2">
                                 <span>Titulo: </span>
                                 <span></span>
-                            </span>
+                            </div>
                             <input type="text" name="title" id="title" class="d-none" placeholder="Titulo">
                         </div>
-                        <div class="col-12 col-md-6 py-5 px-3" id="cardDescription">
-                            <span class="bg-light rounded p-2 px-4">
-                                <span>Descripcion: </span>
+                        <div class="col-12 col-md-4 py-5 px-3" id="cardDescription">
+                            <div class="bg-card rounded py-2">
+                                <span>Descripción: </span>
                                 <span></span>
-                            </span>
-                            <input type="text" name="description" id="description" class="d-none" placeholder="Descripcion">
+                            </div>
+                            <textarea name="description" id="description" cols="30" rows="10" placeholder="Descripción" class="d-none"></textarea>
+                        </div>
+                        <div class="col-12 col-md-4 py-5 px-3" id="cardPriority">
+                            <div class="bg-card rounded py-2">
+                                <span>Prioridad: </span>
+                                <span></span>
+                            </div>
+                            <select name="priority" id="priority" class="d-none">
+                                <option value="1">Muy Alta</option>
+                                <option value="2">Alta</option>
+                                <option value="3">Normal</option>
+                                <option value="4">Baja</option>
+                                <option value="5">Muy baja</option>
+                            </select>
                         </div>
                         <input type="hidden" name="card" id="hiddenInput">
                         <div>
@@ -80,6 +95,8 @@
     <script src="./js/index.js"></script>
     <!--===============================================================================================-->
     <script src="./vendor/js/bootstrap.bundle.min.js"></script>
+    <!--===============================================================================================-->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <!--===============================================================================================-->
 </body>
 </html>

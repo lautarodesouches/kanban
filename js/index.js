@@ -11,6 +11,7 @@ const domCardId             = document.getElementById('cardId');
 const domCardDate           = document.getElementById('cardDate');
 const domCardTitle          = document.getElementById('cardTitle');
 const domCardDescription    = document.getElementById('cardDescription');
+const domCardPriority       = document.getElementById('cardPriority');
 const hiddenInput           = document.getElementById('hiddenInput');
 
 // Variables
@@ -31,7 +32,7 @@ class Card {
         this.id             = ++cardID;
         this.description    = '';
         this.date           = '';
-        this.priority       = '';
+        this.priority       = 3;
     }
 
 }
@@ -99,6 +100,22 @@ function showCards() {
 
     // Crear row
     board.innerHTML = `<div class="mt-5 row justify-content-center text-center"></div>`;
+
+    // Ordenar tarjetas por prioridad
+    cards.sort((a, b) => {
+        if (a.priority > b.priority) {
+            return 1;
+        }
+        if (a.priority < b.priority) {
+            return -1;
+        }
+        // a es igual a b
+        return 0;
+    })    
+
+    console.log(cards);
+
+    cards.forEach((e) => console.log(e.priority, e.title))
 
     // Por cada tipo crear una columna
     type.forEach(type => {
@@ -233,6 +250,7 @@ function showDetails(card) {
     manageDetails(domCardDate       , card.date         , cards.indexOf(card));
     manageDetails(domCardTitle      , card.title        , cards.indexOf(card));
     manageDetails(domCardDescription, card.description  , cards.indexOf(card));
+    manageDetails(domCardPriority   , card.priority     , cards.indexOf(card));
 }
 
 function manageDetails(dom, text, card) {
@@ -272,7 +290,7 @@ function manageDetails(dom, text, card) {
 
 // Eventos
 
-closeDet.onclick    = () => {
+closeDet.onclick = () => {
     details.classList.toggle('d-flex');
 }
 
@@ -284,19 +302,25 @@ cardForm.onsubmit = (e) => {
     // Prevenir recarga
     e.preventDefault();
     // Buscar tarjeta editada
-    let cardSelected = cards[e.target[5].value];
+    let cardSelected = cards[e.target[6].value];
     // Asignar valores
     cardSelected.type           = e.target[0].value;
-    cardSelected.id             = e.target[1].value;
+    cardSelected.id             = parseInt(e.target[1].value);
     cardSelected.date           = e.target[2].value;
     cardSelected.title          = e.target[3].value;
     cardSelected.description    = e.target[4].value;
+    cardSelected.priority       = parseInt(e.target[5].value);
     // Actualizar tarjetas
     localStorage.setItem('cards', JSON.stringify(cards));
     // Recargar
     showCards();
-    /* 
-    cardSelected.priority       = e.target[5].value; */
+    // Notificar
+    Toastify({
+        text: "Cambios guardados",
+        style: {
+          background: "#0d6efd",
+        }
+    }).showToast();
 }
 
 // --- Ejecutar funcion principal ---
