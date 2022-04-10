@@ -53,7 +53,7 @@
 
 #details{
   align-items: center;
-  background-color: #ffffff;
+  background-color: #b4b4b4cb;
   border-bottom: 1px solid black;
   display: none;
   height: 100%;
@@ -72,34 +72,25 @@
 }
 
 #details .container{
-  background-color: #9e9e9e;
+  background-color: #ffffff;
 }
 
 i{
   cursor: pointer;
 }
 
-#cardType .pointer, #cardDate .pointer{
-  background-color: #3f51b5;
+input{
+  border: 1px solid black;
+  border-radius: 5px;
 }
 
-#cardType, #cardId, #cardDate{
-  text-align: center;
+input:focus{
+  border: 1px solid blue;
 }
+
+/* #cardType, #cardDate{
+  background-color: #3f51b5;
+} */
 
 @media (min-width:768px){
-  
-  #details{
-    background-color: #ffffffcb;
-    border-bottom: none;
-  }
-  
-  #cardType{
-    text-align: start;
-  }
-  
-  #cardDate{
-    text-align: end;
-  }
-
 }

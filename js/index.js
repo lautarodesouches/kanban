@@ -4,12 +4,14 @@ const body                  = document.getElementsByTagName('body')[0];
 const header                = document.getElementsByTagName('header')[0];
 const board                 = document.getElementById('board');
 const details               = document.getElementById('details');
-const closeDet              = details.children[0];
-const domCardType           = document.getElementById('cardType').children[0];
+const closeDet              = document.getElementById('closeDet');
+const cardForm              = document.getElementById('cardForm');
+const domCardType           = document.getElementById('cardType');
 const domCardId             = document.getElementById('cardId');
-const domCardDate           = document.getElementById('cardDate').children[0];
+const domCardDate           = document.getElementById('cardDate');
 const domCardTitle          = document.getElementById('cardTitle');
 const domCardDescription    = document.getElementById('cardDescription');
+const hiddenInput           = document.getElementById('hiddenInput');
 
 // Variables
 
@@ -226,20 +228,75 @@ function showCards() {
 }
 
 function showDetails(card) {
-    domCardType.innerText = `Tipo: ${card.type}`;
-    domCardId.innerText = `ID: ${card.id}`;
-    domCardDate.innerText = (card.date !== '' ? `Fecha: ${card.date}` : 'Seleccionar fecha');
-    domCardTitle.innerText = card.title;
-    domCardDescription.innerHTML = (card.description !== '' ? card.description : 'Añadir descripcion');
+    manageDetails(domCardType       , card.type         , cards.indexOf(card));
+    manageDetails(domCardId         , card.id           , cards.indexOf(card));
+    manageDetails(domCardDate       , card.date         , cards.indexOf(card));
+    manageDetails(domCardTitle      , card.title        , cards.indexOf(card));
+    manageDetails(domCardDescription, card.description  , cards.indexOf(card));
+}
+
+function manageDetails(dom, text, card) {
+
+    // Variables
+    let valorAcual  = dom.children[0];
+    let input       = dom.children[1];
+
+    hiddenInput.value = card;
+
+    // Mostrar valor actual
+    valorAcual.children[1].innerText = text;
+    // Cambiar valores input
+    input.value = text;
+
+    // Al hacer click
+    valorAcual.onclick = () => {
+        // Ocultar datos actuales
+        valorAcual.classList.toggle('d-none');
+        // Mostrar input
+        input.classList.toggle('d-none');
+        // Hacer foco en input
+        input.focus();
+    }
+
+    // Al desenfocar del input
+    input.onblur = () => {
+        // Ocultar input
+        input.classList.toggle('d-none');
+        // Cambiar valor actual
+        valorAcual.children[1].innerText = input.value;
+        // Mostrar valor actual
+        valorAcual.classList.toggle('d-none');
+    }
+
 }
 
 // Eventos
-closeDet.onclick = () => {
+
+closeDet.onclick    = () => {
     details.classList.toggle('d-flex');
 }
 
 body.onkeyup = (e) => {
     ( e.key == "Escape" && details.classList.contains('d-flex') ) && details.classList.remove('d-flex');
+}
+
+cardForm.onsubmit = (e) => {
+    // Prevenir recarga
+    e.preventDefault();
+    // Buscar tarjeta editada
+    let cardSelected = cards[e.target[5].value];
+    // Asignar valores
+    cardSelected.type           = e.target[0].value;
+    cardSelected.id             = e.target[1].value;
+    cardSelected.date           = e.target[2].value;
+    cardSelected.title          = e.target[3].value;
+    cardSelected.description    = e.target[4].value;
+    // Actualizar tarjetas
+    localStorage.setItem('cards', JSON.stringify(cards));
+    // Recargar
+    showCards();
+    /* 
+    cardSelected.priority       = e.target[5].value; */
 }
 
 // --- Ejecutar funcion principal ---
