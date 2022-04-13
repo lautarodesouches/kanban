@@ -185,9 +185,12 @@ function showCards() {
                         `
                         :
                         `
-                            <div class="col-10 py-1">
+                            <div class="col-9 py-1">
                                 <p class="m-0">${element.title}</p>
                                 <input type="text" class="d-none">
+                            </div>
+                            <div class="col-1">
+                                <p></p>
                             </div>
                         `
                     }
@@ -200,7 +203,7 @@ function showCards() {
                 const detailsBtn  = card.children[0];
                 const paragraph   = card.children[1].children[0];
                 const input       = card.children[1].children[1];
-                const deleteBtn   = card.children[2];
+                const deleteBtn   = card.children[3];
 
                 detailsBtn.onclick = () => {
                     showDetails(element);
