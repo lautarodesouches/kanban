@@ -111,11 +111,7 @@ function showCards() {
         }
         // a es igual a b
         return 0;
-    })    
-
-    console.log(cards);
-
-    cards.forEach((e) => console.log(e.priority, e.title))
+    })
 
     // Por cada tipo crear una columna
     type.forEach(type => {
@@ -145,16 +141,56 @@ function showCards() {
                 // Mostrar tarjeta
                 let card = document.createElement('div');
                 card.id = element.id;
-                card.classList = `row bg-white tarjeta rounded shadow-sm my-2`;
+                // Color por defecto
+                let textColor = 'text-dark';
+                let cardDate, todaysDate;
+                // Si la tarjeta tiene fecha
+                if (element.date !== '') {
+                    // Tomar fecha tarjeta
+                    cardDate    = new Date(element.date);
+                    // Añadir un dia por desfasaje de horas
+                    cardDate.setDate(cardDate.getDate() + 1);
+                    // Tomar fecha actual
+                    todaysDate  = new Date();
+                    // Setear horas en 0 para poder comparar
+                    todaysDate.setHours(0, 0, 0, 0);
+                    // Comparar
+                    if (cardDate.getDate() > todaysDate.getDate()) {
+                        textColor = 'text-success';
+                    } else if(cardDate.getDate() < todaysDate.getDate()) {
+                        textColor = 'text-danger';
+                    }else {
+                        textColor = 'text-primary';
+                    }
+
+                }
+
+                card.classList = `row tarjeta rounded shadow-sm my-2`;
                 card.draggable = true;
                 card.innerHTML = `
                     <div class="col-1">
                         <i class="bi bi-list"></i>
                     </div>
-                    <div class="col-10 py-1">
-                        <p class="m-0">${element.title}</p>
-                        <input type="text" class="d-none">
-                    </div>
+                    ${
+                        cardDate
+                        ?
+                        `
+                            <div class="col-8 py-1">
+                                <p class="m-0">${element.title}</p>
+                                <input type="text" class="d-none">
+                            </div>
+                            <div class="col-2 py-1">
+                                <p class="m-0 ${textColor}">${cardDate.getDate()}/${cardDate.getMonth()+1}</p>
+                            </div>
+                        `
+                        :
+                        `
+                            <div class="col-10 py-1">
+                                <p class="m-0">${element.title}</p>
+                                <input type="text" class="d-none">
+                            </div>
+                        `
+                    }
                     <div class="col-1">
                         <i class="bi bi-x-square-fill text-danger"></i>
                     </div>
